@@ -13,11 +13,11 @@ jobs:
         run: echo "::set-output name=version::${GITHUB_REF:10}"
       - uses: actions/checkout@v3.5.3
 
-      - name: "Set up JDK 1.8"
+      - name: "Set up JDK"
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 8.0.x
+          java-version: 17
 
       - name: "Set up GPG"
         run: echo -n "${GPG_PRIVATE_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/${GPG_KEY_ID}.gpg

@@ -69,11 +69,11 @@ subprojects {
     dependencyManagement {
         imports {
             mavenBom("com.fasterxml.jackson:jackson-bom:2.15.2")
-            mavenBom("org.junit:junit-bom:5.9.3")
-            mavenBom("io.qameta.allure:allure-bom:2.22.1")
+            mavenBom("org.junit:junit-bom:5.10.0")
+            mavenBom("io.qameta.allure:allure-bom:2.23.0")
         }
         dependencies {
-            dependency("ch.qos.logback:logback-classic:1.4.7")
+            dependency("ch.qos.logback:logback-classic:1.3.8")
             dependency("com.beust:jcommander:1.82")
             dependency("com.github.spotbugs:spotbugs-annotations:4.7.3")
             dependency("com.opencsv:opencsv:4.6")
@@ -81,15 +81,15 @@ subprojects {
             dependency("commons-io:commons-io:2.13.0")
             dependency("javax.xml.bind:jaxb-api:2.3.1")
             dependency("org.allurefw:allure1-model:1.0")
-            dependency("org.apache.commons:commons-lang3:3.12.0")
+            dependency("org.apache.commons:commons-lang3:3.13.0")
             dependency("org.apache.httpcomponents:httpclient:4.5.14")
             dependency("org.apache.tika:tika-core:2.8.0")
             dependency("org.assertj:assertj-core:3.24.2")
             dependency("org.eclipse.jetty:jetty-server:9.4.51.v20230217")
             dependency("org.freemarker:freemarker:2.3.32")
-            dependency("org.mockito:mockito-core:5.3.1")
+            dependency("org.mockito:mockito-core:5.4.0")
             dependency("org.projectlombok:lombok:1.18.28")
-            dependency("org.zeroturnaround:zt-zip:1.15")
+            dependency("org.zeroturnaround:zt-zip:1.16")
             dependencySet("org.slf4j:2.0.7") {
                 entry("slf4j-api")
                 entry("slf4j-nop")
@@ -99,7 +99,7 @@ subprojects {
                 entry("converter-jackson")
                 entry("retrofit")
             }
-            dependencySet("com.vladsch.flexmark:0.64.8") {
+            dependencySet("com.vladsch.flexmark:0.62.2") {
                 entry("flexmark")
                 entry("flexmark-ext-tables")
             }
