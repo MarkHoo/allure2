@@ -31,11 +31,11 @@ public class PluginConfiguration implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    protected String id;
-    protected String name;
-    protected String description;
-    protected List<String> extensions = new ArrayList<>();
-    protected List<String> jsFiles = new ArrayList<>();
-    protected List<String> cssFiles = new ArrayList<>();
+    private String id;
+    private String name;
+    private String description;
+    private List<String> extensions = new ArrayList<>();
+    private List<String> jsFiles = new ArrayList<>();
+    private List<String> cssFiles = new ArrayList<>();
 
 }

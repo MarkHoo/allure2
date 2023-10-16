@@ -37,7 +37,9 @@ import java.util.List;
  *
  * @param <T> type of result bean.
  * @since 2.0
+ * @deprecated for removal. Use {@link CommonCsvExportAggregator2} instead.
  */
+@Deprecated
 public abstract class CommonCsvExportAggregator<T> implements Aggregator {
 
     private final String fileName;
@@ -96,7 +98,7 @@ public abstract class CommonCsvExportAggregator<T> implements Aggregator {
 
         private String extractHeaderName(final BeanField<T> beanField) {
             if (beanField == null || beanField.getField() == null
-                    || beanField.getField().getDeclaredAnnotationsByType(CsvBindByName.class).length == 0) {
+                || beanField.getField().getDeclaredAnnotationsByType(CsvBindByName.class).length == 0) {
                 return StringUtils.EMPTY;
             }
 

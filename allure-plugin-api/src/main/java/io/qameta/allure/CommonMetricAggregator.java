@@ -32,7 +32,9 @@ import java.util.stream.Collectors;
 
 /**
  * @author charlie (Dmitry Baev).
+ * @deprecated for removal. Use {@link CommonJsonAggregator2} instead.
  */
+@Deprecated
 public abstract class CommonMetricAggregator implements Aggregator {
 
     private final String location;
