@@ -68,14 +68,14 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom("com.fasterxml.jackson:jackson-bom:2.15.2")
+            mavenBom("com.fasterxml.jackson:jackson-bom:2.15.3")
             mavenBom("org.junit:junit-bom:5.10.0")
             mavenBom("io.qameta.allure:allure-bom:2.24.0")
         }
         dependencies {
             dependency("ch.qos.logback:logback-classic:1.3.11")
             dependency("com.beust:jcommander:1.82")
-            dependency("com.github.spotbugs:spotbugs-annotations:4.7.3")
+            dependency("com.github.spotbugs:spotbugs-annotations:4.8.0")
             dependency("com.opencsv:opencsv:4.6")
             dependency("commons-beanutils:commons-beanutils:1.9.4")
             dependency("commons-io:commons-io:2.14.0")
