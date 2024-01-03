@@ -1,7 +1,7 @@
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 import java.nio.charset.StandardCharsets.UTF_8
 
-val linkHomepage by extra("https://qameta.io/allure")
+val linkHomepage by extra("https://allurereport.org/")
 val linkCi by extra("https://ci.qameta.io/job/allure2")
 val linkScmUrl by extra("https://github.com/allure-framework/allure2")
 val linkScmConnection by extra("scm:git:git://github.com/allure-framework/allure2.git")
@@ -68,26 +68,26 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom("com.fasterxml.jackson:jackson-bom:2.15.3")
-            mavenBom("org.junit:junit-bom:5.10.0")
-            mavenBom("io.qameta.allure:allure-bom:2.24.0")
+            mavenBom("com.fasterxml.jackson:jackson-bom:2.16.0")
+            mavenBom("org.junit:junit-bom:5.10.1")
+            mavenBom("io.qameta.allure:allure-bom:2.25.0")
         }
         dependencies {
             dependency("ch.qos.logback:logback-classic:1.3.11")
             dependency("com.beust:jcommander:1.82")
-            dependency("com.github.spotbugs:spotbugs-annotations:4.8.0")
+            dependency("com.github.spotbugs:spotbugs-annotations:4.8.2")
             dependency("com.opencsv:opencsv:4.6")
             dependency("commons-beanutils:commons-beanutils:1.9.4")
-            dependency("commons-io:commons-io:2.14.0")
+            dependency("commons-io:commons-io:2.15.1")
             dependency("javax.xml.bind:jaxb-api:2.3.1")
             dependency("org.allurefw:allure1-model:1.0")
-            dependency("org.apache.commons:commons-lang3:3.13.0")
+            dependency("org.apache.commons:commons-lang3:3.14.0")
             dependency("org.apache.httpcomponents:httpclient:4.5.14")
-            dependency("org.apache.tika:tika-core:2.9.0")
+            dependency("org.apache.tika:tika-core:2.9.1")
             dependency("org.assertj:assertj-core:3.24.2")
-            dependency("org.eclipse.jetty:jetty-server:9.4.51.v20230217")
+            dependency("org.eclipse.jetty:jetty-server:9.4.53.v20231009")
             dependency("org.freemarker:freemarker:2.3.32")
-            dependency("org.junit-pioneer:junit-pioneer:2.1.0")
+            dependency("org.junit-pioneer:junit-pioneer:2.2.0")
             dependency("org.mockito:mockito-core:5.6.0")
             dependency("org.projectlombok:lombok:1.18.30")
             dependency("org.zeroturnaround:zt-zip:1.16")
@@ -167,7 +167,7 @@ subprojects {
             if (spotbugs != null) {
                 dependencies {
                     spotbugs("org.slf4j:slf4j-simple")
-                    spotbugs("com.github.spotbugs:spotbugs:4.7.3")
+                    spotbugs("com.github.spotbugs:spotbugs:4.8.2")
                 }
             }
         }
@@ -223,7 +223,11 @@ subprojects {
                 pom {
                     name.set(project.name)
                     description.set("Module ${project.name} of Allure Framework.")
-                    url.set("https://github.com/allure-framework/allure2")
+                    url.set("https://allurereport.org/")
+                    organization {
+                        name.set("Qameta Software")
+                        url.set("https://qameta.io/")
+                    }
                     licenses {
                         license {
                             name.set("The Apache License, Version 2.0")
@@ -235,11 +239,13 @@ subprojects {
                             id.set("baev")
                             name.set("Dmitry Baev")
                             email.set("dmitry.baev@qameta.io")
+                            url.set("https://github.com/baev")
                         }
                         developer {
                             id.set("eroshenkoam")
                             name.set("Artem Eroshenko")
                             email.set("artem.eroshenko@qameta.io")
+                            url.set("https://github.com/eroshenkoam")
                         }
                     }
                     scm {
@@ -250,6 +256,10 @@ subprojects {
                     issueManagement {
                         system.set("GitHub Issues")
                         url.set("https://github.com/allure-framework/allure2/issues")
+                    }
+                    ciManagement {
+                        system.set("Github Actions")
+                        url.set("https://github.com/allure-framework/allure-java/actions")
                     }
                     versionMapping {
                         usage("java-api") {
