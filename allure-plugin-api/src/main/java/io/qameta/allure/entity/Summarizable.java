@@ -1,5 +1,5 @@
 /*
- *  Copyright 2016-2023 Qameta Software OÜ
+ *  Copyright 2016-2024 Qameta Software Inc
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ public interface Summarizable {
                 .noneMatch(step -> step.hasMessage(message.get()));
     }
 
-    default boolean hasMessage(String message) {
+    default boolean hasMessage(final String message) {
         final Optional<String> current = Optional.ofNullable(getStatusMessage())
                 .filter(s -> Objects.equals(s, message));
         return current.isPresent() || getSteps().stream()

@@ -8,9 +8,9 @@ plugins {
 description = "Allure Report Generator"
 
 node {
-    // enforce https
-    distBaseUrl.set("https://nodejs.org/dist")
-    version.set("16.18.0")
+    // repository is declared in root settings.gradle.kts
+    distBaseUrl.set(null as String?)
+    version.set("20.12.1")
     download.set(true)
 }
 
@@ -91,11 +91,6 @@ tasks.processResources {
 
 tasks.test {
     dependsOn(testWeb)
-    jvmArgs = listOf(
-        "--add-opens",
-        "java.base/java.lang=ALL-UNNAMED",
-        "java.base/java.util=ALL-UNNAMED",
-    )
 }
 
 val allurePlugin by configurations.existing

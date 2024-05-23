@@ -1,5 +1,5 @@
 /*
- *  Copyright 2016-2023 Qameta Software OÜ
+ *  Copyright 2016-2024 Qameta Software Inc
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -98,6 +98,7 @@ public class XrayTestRunExportPlugin implements Aggregator2 {
         }
     }
 
+    @SuppressWarnings("PMD.CognitiveComplexity")
     private void updateTestRunStatuses(final List<LaunchResults> launchesResults) {
         final List<String> executionIssues = splitByComma(issues);
         final JiraService jiraService = jiraServiceSupplier.get();
@@ -132,7 +133,7 @@ public class XrayTestRunExportPlugin implements Aggregator2 {
 
                                 case XRAY_STATUS_PASS:
                                     if (!linkNamePerStatus.containsKey(link.getName())
-                                        || linkNamePerStatus.get(link.getName()).equals(XRAY_STATUS_TODO)) {
+                                        || XRAY_STATUS_TODO.equals(linkNamePerStatus.get(link.getName()))) {
                                         linkNamePerStatus.put(link.getName(), status);
                                     }
                                     break;

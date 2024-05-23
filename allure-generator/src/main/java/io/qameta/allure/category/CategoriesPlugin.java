@@ -1,5 +1,5 @@
 /*
- *  Copyright 2016-2023 Qameta Software OÜ
+ *  Copyright 2016-2024 Qameta Software Inc
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -179,7 +179,7 @@ public class CategoriesPlugin extends CompositeAggregator2 implements Reader {
     /**
      * Adds categories info to test results.
      */
-    private static class EnrichDataAggregator implements Aggregator2 {
+    private static final class EnrichDataAggregator implements Aggregator2 {
 
         @Override
         public void aggregate(final Configuration configuration,
@@ -192,7 +192,7 @@ public class CategoriesPlugin extends CompositeAggregator2 implements Reader {
     /**
      * Generates tree data.
      */
-    private static class JsonAggregator extends CommonJsonAggregator2 {
+    private static final class JsonAggregator extends CommonJsonAggregator2 {
 
         JsonAggregator() {
             super(JSON_FILE_NAME);
@@ -207,7 +207,7 @@ public class CategoriesPlugin extends CompositeAggregator2 implements Reader {
     /**
      * Generates export data.
      */
-    private static class CsvExportAggregator extends CommonCsvExportAggregator2<CsvExportCategory> {
+    private static final class CsvExportAggregator extends CommonCsvExportAggregator2<CsvExportCategory> {
 
         CsvExportAggregator() {
             super(CSV_FILE_NAME, CsvExportCategory.class);
@@ -231,7 +231,7 @@ public class CategoriesPlugin extends CompositeAggregator2 implements Reader {
     /**
      * Generates widget data.
      */
-    private static class WidgetAggregator extends CommonJsonAggregator2 {
+    private static final class WidgetAggregator extends CommonJsonAggregator2 {
 
         WidgetAggregator() {
             super(Constants.WIDGETS_DIR, JSON_FILE_NAME);

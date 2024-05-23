@@ -1,4 +1,5 @@
 import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.github.spotbugs.snom.SpotBugsTask
 import java.nio.charset.StandardCharsets.UTF_8
 
 val linkHomepage by extra("https://allurereport.org/")
@@ -13,7 +14,7 @@ val qualityConfigsDir by extra("$gradleScriptDir/quality-configs")
 val spotlessDtr by extra("$qualityConfigsDir/spotless")
 
 tasks.wrapper {
-    gradleVersion = "8.1.1"
+    gradleVersion = "8.5"
 }
 
 plugins {
@@ -21,12 +22,14 @@ plugins {
     `java-library`
     `maven-publish`
     signing
+    checkstyle
+    pmd
+    id("com.github.spotbugs")
     id("com.bmuschko.docker-remote-api")
     id("io.github.gradle-nexus.publish-plugin")
     id("com.diffplug.spotless")
     id("com.gorylenko.gradle-git-properties")
     id("io.spring.dependency-management")
-    id("ru.vyarus.quality")
     id("org.owasp.dependencycheck")
 }
 
@@ -62,48 +65,52 @@ subprojects {
     apply(plugin = "java")
     apply(plugin = "signing")
     apply(plugin = "maven-publish")
-    apply(plugin = "ru.vyarus.quality")
+    apply(plugin = "checkstyle")
+    apply(plugin = "pmd")
+    apply(plugin = "com.github.spotbugs")
     apply(plugin = "com.diffplug.spotless")
     apply(plugin = "io.spring.dependency-management")
 
+    val orgSlf4jVersion = "2.0.13"
+    val comSquareupRetrofit2Version = "2.11.0"
+
     dependencyManagement {
         imports {
-            mavenBom("com.fasterxml.jackson:jackson-bom:2.16.0")
-            mavenBom("org.junit:junit-bom:5.10.1")
-            mavenBom("io.qameta.allure:allure-bom:2.25.0")
+            mavenBom("com.fasterxml.jackson:jackson-bom:2.17.1")
+            mavenBom("com.squareup.okhttp3:okhttp-bom:4.12.0")
+            // latest version that supports java 8
+            mavenBom("com.vladsch.flexmark:flexmark-all:0.62.2")
+            mavenBom("io.qameta.allure:allure-bom:2.27.0")
+            mavenBom("org.junit:junit-bom:5.10.2")
         }
         dependencies {
-            dependency("ch.qos.logback:logback-classic:1.3.11")
+            dependency("ch.qos.logback:logback-classic:1.3.14")
             dependency("com.beust:jcommander:1.82")
-            dependency("com.github.spotbugs:spotbugs-annotations:4.8.2")
-            dependency("com.opencsv:opencsv:4.6")
+            dependency("com.github.spotbugs:spotbugs-annotations:4.8.5")
+            dependency("com.github.spotbugs:spotbugs:4.8.5")
+            dependency("com.opencsv:opencsv:5.9")
+            dependency("com.puppycrawl.tools:checkstyle:10.16.0")
+            dependency("com.squareup.retrofit2:converter-jackson:${comSquareupRetrofit2Version}")
+            dependency("com.squareup.retrofit2:retrofit:${comSquareupRetrofit2Version}")
             dependency("commons-beanutils:commons-beanutils:1.9.4")
-            dependency("commons-io:commons-io:2.15.1")
+            dependency("commons-io:commons-io:2.16.1")
             dependency("javax.xml.bind:jaxb-api:2.3.1")
+            dependency("net.sourceforge.pmd:pmd-java:7.1.0")
             dependency("org.allurefw:allure1-model:1.0")
+            dependency("org.apache.commons:commons-collections4:4.4")
             dependency("org.apache.commons:commons-lang3:3.14.0")
             dependency("org.apache.httpcomponents:httpclient:4.5.14")
-            dependency("org.apache.tika:tika-core:2.9.1")
-            dependency("org.assertj:assertj-core:3.24.2")
+            dependency("org.apache.tika:tika-core:2.9.2")
+            dependency("org.assertj:assertj-core:3.25.3")
             dependency("org.eclipse.jetty:jetty-server:9.4.53.v20231009")
             dependency("org.freemarker:freemarker:2.3.32")
             dependency("org.junit-pioneer:junit-pioneer:2.2.0")
-            dependency("org.mockito:mockito-core:5.6.0")
-            dependency("org.projectlombok:lombok:1.18.30")
-            dependency("org.zeroturnaround:zt-zip:1.16")
-            dependencySet("org.slf4j:2.0.7") {
-                entry("slf4j-api")
-                entry("slf4j-nop")
-                entry("slf4j-simple")
-            }
-            dependencySet("com.squareup.retrofit2:2.9.0") {
-                entry("converter-jackson")
-                entry("retrofit")
-            }
-            dependencySet("com.vladsch.flexmark:0.62.2") {
-                entry("flexmark")
-                entry("flexmark-ext-tables")
-            }
+            dependency("org.mockito:mockito-core:5.11.0")
+            dependency("org.projectlombok:lombok:1.18.32")
+            dependency("org.slf4j:slf4j-api:${orgSlf4jVersion}")
+            dependency("org.slf4j:slf4j-nop:${orgSlf4jVersion}")
+            dependency("org.slf4j:slf4j-simple:${orgSlf4jVersion}")
+            dependency("org.zeroturnaround:zt-zip:1.17")
         }
     }
 
@@ -129,6 +136,7 @@ subprojects {
     }
 
     tasks.test {
+        useJUnitPlatform()
         systemProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug")
         systemProperty("allure.model.indentOutput", "true")
         systemProperty("junit.jupiter.execution.parallel.enabled", true)
@@ -138,6 +146,12 @@ subprojects {
         }
         maxHeapSize = project.property("test.maxHeapSize").toString()
         maxParallelForks = Integer.parseInt(project.property("test.maxParallelForks") as String)
+        jvmArgs = listOf(
+            "--add-opens",
+            "java.base/java.lang=ALL-UNNAMED",
+            "--add-opens",
+            "java.base/java.util=ALL-UNNAMED",
+        )
     }
 
     tasks.processTestResources {
@@ -148,29 +162,46 @@ subprojects {
         }
     }
 
-    quality {
-        configDir = "$gradleScriptDir/quality-configs"
-        excludeSources = fileTree("build/generated-sources")
-        exclude("**/*.json")
-        checkstyleVersion = "8.36.1"
-        pmdVersion = "6.28.0"
-        spotbugsVersion = "4.1.2"
-        codenarcVersion = "1.6"
-        spotbugs = true
-        codenarc = true
-        pmd = true
-        checkstyle = true
-        htmlReports = false
+    fun excludeGeneratedSources(source: FileTree): FileTree = (source - fileTree("build/generated-sources")).asFileTree
 
-        afterEvaluate {
-            val spotbugs = configurations.findByName("spotbugs")
-            if (spotbugs != null) {
-                dependencies {
-                    spotbugs("org.slf4j:slf4j-simple")
-                    spotbugs("com.github.spotbugs:spotbugs:4.8.2")
-                }
-            }
-        }
+    checkstyle {
+        toolVersion = dependencyManagement.managedVersions["com.puppycrawl.tools:checkstyle"]!!
+        configDirectory = rootProject.layout.projectDirectory.dir("gradle/quality-configs/checkstyle")
+    }
+
+    pmd {
+        toolVersion = dependencyManagement.managedVersions["net.sourceforge.pmd:pmd-java"]!!
+        ruleSets = listOf()
+        ruleSetFiles = rootProject.files("gradle/quality-configs/pmd/pmd.xml")
+        targetJdk = TargetJdk.VERSION_1_7
+    }
+
+    spotbugs {
+        toolVersion = dependencyManagement.managedVersions["com.github.spotbugs:spotbugs"]!!
+        excludeFilter = rootProject.file("gradle/quality-configs/spotbugs/exclude.xml")
+    }
+
+    tasks.withType(Checkstyle::class) {
+        source = excludeGeneratedSources(source)
+    }
+
+    tasks.withType(Pmd::class) {
+        source = excludeGeneratedSources(source)
+    }
+
+    tasks.withType(SpotBugsTask::class) {
+    }
+
+    tasks.checkstyleTest {
+        enabled = false
+    }
+
+    tasks.pmdTest {
+        enabled = false
+    }
+
+    tasks.spotbugsTest {
+        enabled = false
     }
 
     spotless {
@@ -291,7 +322,7 @@ subprojects {
         }
     }
 
-    val pluginsDir = "$buildDir/plugins/"
+    val pluginsDir = layout.buildDirectory.dir("plugins")
     val copyPlugins by tasks.creating(Sync::class) {
         group = "Build"
         dependsOn(allurePlugin)
@@ -302,11 +333,6 @@ subprojects {
             segments[0] = segments[0].replace("-${project.version}", "")
         }
         includeEmptyDirs = false
-    }
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
     }
 }
 
